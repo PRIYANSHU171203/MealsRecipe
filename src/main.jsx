@@ -9,6 +9,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import store from './store/store.js'
 import { AuthLayout, Login, SignUp } from './components'
 import Home from './pages/Home.jsx'
+import MealDetails from './pages/MealDetails.jsx'
+
 
 
 const router = createBrowserRouter([
@@ -36,6 +38,10 @@ const router = createBrowserRouter([
           </AuthLayout>
         )
       },
+      {
+        path:"/meal/:id",
+        element: <MealDetails/>
+      }
     ],
   },
 ])

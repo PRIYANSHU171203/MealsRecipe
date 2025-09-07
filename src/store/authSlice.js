@@ -1,24 +1,60 @@
-import { createSlice } from '@reduxjs/toolkit';
+// import { createSlice } from '@reduxjs/toolkit';
+
+// const initialState = {
+//     status : false,
+//     userData : null
+// }
+
+// const authslice = createSlice({
+//     name : 'auth',
+//     initialState,
+//     reducers :{
+//         login :((state, action) => {
+//             state.status = true;
+//             state.userData = action.payload.userData;
+//         }),
+//         logout:((state) => {
+//             state.status = false;
+//             state.userData = null;
+//         })
+//     }
+// })
+
+// export const {login, logout} = authslice.actions;
+// export default authslice.reducer;
+
+
+import { createSlice } from "@reduxjs/toolkit";
+
+// Load from localStorage (if user already logged in)
+const userDataFromStorage = JSON.parse(localStorage.getItem("userData"));
+const statusFromStorage = !!userDataFromStorage;
 
 const initialState = {
-    status : false,
-    userData : null
-}
+  status: statusFromStorage, // true if logged in
+  userData: userDataFromStorage || null, // { id, email, role }
+};
 
-const authslice = createSlice({
-    name : 'auth',
-    initialState,
-    reducers :{
-        login :((state, action) => {
-            state.status = true;
-            state.userData = action.payload.userData;
-        }),
-        logout:((state) => {
-            state.status = false;
-            state.userData = null;
-        })
-    }
-})
+const authSlice = createSlice({
+  name: "auth",
+  initialState,
+  reducers: {
+    login: (state, action) => {
+      state.status = true;
+      state.userData = action.payload; // { id, email, role }
 
-export const {login, logout} = authslice.actions;
-export default authslice.reducer;
+      // Save to localStorage for persistence
+      localStorage.setItem("userData", JSON.stringify(action.payload));
+    },
+    logout: (state) => {
+      state.status = false;
+      state.userData = null;
+
+      // Clear localStorage
+      localStorage.removeItem("userData");
+    },
+  },
+});
+
+export const { login, logout } = authSlice.actions;
+export default authSlice.reducer;

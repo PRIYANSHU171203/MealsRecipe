@@ -8,7 +8,6 @@ import Logo from "./Logo"
 import Login from "./Login";
 import SignUp from "./SignUp";
 import AuthLayout from './AuthLayout'
-import MealSearch from "./MealSearch";
 import MealCard from "./MealCard/MealCard";
 
 export {
@@ -22,6 +21,5 @@ export {
     Login,
     SignUp,
     AuthLayout,
-    MealSearch,
     MealCard
 }

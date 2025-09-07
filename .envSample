@@ -1,0 +1,4 @@
+VITE_APPWRITE_URL = "Appwrite End Point"
+VITE_APPWRITE_PROJECT_ID = "apprite Project Id"
+VITE_APPWRITE_DB_ID = "Appwrite DB ID"
+VITE_APPWRITE_COLLECTION_ID = "Appwrite collection ID"
