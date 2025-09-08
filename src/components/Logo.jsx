@@ -1,7 +1,8 @@
-
+import logo from "../assets/logo.png"
 function Logo() {
-    return  <img src='../assets/new.png' alt="MealsRecipe logo"
-    className='w-28'
+    return  <img src={logo} alt="MealsRecipe-logo"
+    className='w-15'
+
     />;
 }
 

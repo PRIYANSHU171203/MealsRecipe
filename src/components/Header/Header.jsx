@@ -42,7 +42,7 @@ function Header() {
     <nav className='flex items-center justify-between'>
       
       {/* Logo */}
-      <div className='m-2'>
+      <div >
         <Link to={'/'}>
           <Logo />
         </Link>
