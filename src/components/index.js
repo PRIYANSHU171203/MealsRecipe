@@ -8,7 +8,9 @@ import Logo from "./Logo"
 import Login from "./Login";
 import SignUp from "./SignUp";
 import AuthLayout from './AuthLayout'
-import MealCard from "./MealCard/MealCard";
+import MealCard from "./MealCard";
+import SearchInput from "./SearchInput";
+import Loader from "./Loader";
 
 export {
     Header,
@@ -21,5 +23,7 @@ export {
     Login,
     SignUp,
     AuthLayout,
-    MealCard
+    MealCard,
+    SearchInput,
+    Loader
 }

@@ -10,6 +10,8 @@ import store from './store/store.js'
 import { AuthLayout, Login, SignUp } from './components'
 import Home from './pages/Home.jsx'
 import MealDetails from './pages/MealDetails.jsx'
+import AllMeals from './pages/AllMeals.jsx' 
+import {Loader} from './components'
 
 
 
@@ -37,6 +39,10 @@ const router = createBrowserRouter([
             <SignUp />
           </AuthLayout>
         )
+      },
+      {
+        path:"/meals",
+        element: <AllMeals />
       },
       {
         path:"/meal/:id",

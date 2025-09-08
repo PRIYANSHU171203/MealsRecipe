@@ -1,7 +1,6 @@
-import React from 'react'
-import logo from '../assets/logo.svg'
+
 function Logo() {
-    return  <img src={logo} alt="MealsRecipe logo"
+    return  <img src='../assets/new.png' alt="MealsRecipe logo"
     className='w-28'
     />;
 }

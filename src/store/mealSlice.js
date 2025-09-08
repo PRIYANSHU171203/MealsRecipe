@@ -72,6 +72,13 @@ const mealSlice = createSlice({
       const end = state.currentPage * state.itemsPerPage;
       state.visibleMeals = state.filteredMeals.slice(0, end);
     },
+    clearMeals: (state) => {
+      state.meals = [];
+      state.filteredMeals = [];
+      state.visibleMeals = [];
+      state.searchQuery = "";
+      state.currentPage = 1;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -92,5 +99,5 @@ const mealSlice = createSlice({
   },
 });
 
-export const { setSearchQuery, loadMoreMeals } = mealSlice.actions;
+export const { setSearchQuery, loadMoreMeals, clearMeals } = mealSlice.actions;
 export default mealSlice.reducer;
