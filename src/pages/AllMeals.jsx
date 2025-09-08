@@ -1,11 +1,14 @@
+import {useState, useEffect} from 'react'
 import { useDispatch, useSelector } from "react-redux";
 import {SearchInput, MealCard, Loader} from '../components'
 import { loadMoreMeals } from "../store/mealSlice";
 
 
 
+
 function AllMeals() {
     const dispatch = useDispatch();
+    
   const { visibleMeals, loading, error, filteredMeals } = useSelector(
     (state) => state.meals
   );

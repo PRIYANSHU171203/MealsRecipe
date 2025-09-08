@@ -10,20 +10,28 @@ import {fetchMeals, clearMeals} from './store/mealSlice'
 function App() {
   const [loading, setLoading] = useState(true)
   const dispatch = useDispatch()
+
   
   useEffect(() => {
-    authService.getCurrentUser()
-    .then((userData) => {
-      if (userData) {
-        dispatch(login({userData}))
-        dispatch(fetchMeals())
-      }else{
-        dispatch(logout())
-        dispatch(clearMeals())
+    const init = async () => {
+      await authService.getCurrentUser()
+      .then((userData) => {
+            if (userData) {
+              dispatch(login({ userData }))
+              dispatch(fetchMeals())
+            } else {
+              dispatch(logout())
+              dispatch(clearMeals())
+            }
+      })
+      .finally(() => setLoading(false))
       }
-    })
-    .finally(() => setLoading(false))
-  },[])
+      init();
+  }, [dispatch])
+
+
+  
+  
 
   return !loading ? (
   <div className="min-h-screen flex flex-wrap content-between ">
