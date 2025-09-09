@@ -7,7 +7,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 
 import store from './store/store.js'
-import { AuthLayout, Login, SignUp, Verify } from './components'
+import { AuthLayout, Login, SignUp, Verify, VerifyComplete } from './components'
 import Home from './pages/Home.jsx'
 import MealDetails from './pages/MealDetails.jsx'
 import AllMeals from './pages/AllMeals.jsx' 
@@ -54,6 +54,10 @@ const router = createBrowserRouter([
       {
         path:"/verify",
         element: <Verify/>
+      },
+      {
+        path:"/verify-complete",
+        element: <VerifyComplete/>
       }
     ],
   },

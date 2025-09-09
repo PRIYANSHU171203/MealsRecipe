@@ -47,8 +47,9 @@ function Profile() {
             Update Password
           </button>
 
-          {/* Logout Button */}
-          <LogoutBtn />
+          <div className="w-full">
+              <LogoutBtn />
+          </div>
         </div>
       )}
     </div>

@@ -32,10 +32,12 @@ export class AuthService {
         // Send verification email
         async sendVerificationEmail() {
             try {
-                const response = await this.account.createVerification(
-                    `${window.location.origin}/verify`
-                );
-                return response;
+                const redirectUrl =
+                import.meta.env.MODE === "development"
+                    ? "http://localhost:3000/verify-complete"
+                    : "https://meals-recipe-devils-projects-a9995fee.vercel.app/";
+
+    return await this.account.createVerification(redirectUrl);
             } catch (error) {
                 console.log("Appwrite :: Send Verification Email :: Error", error);
                 throw error;
