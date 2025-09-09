@@ -5,6 +5,7 @@ import {Logo, Input, Button, Loader} from '../components'
 import authService from '../appwrite/auth'
 import {login as authLogin} from '../store/authSlice'
 import {useForm} from 'react-hook-form'
+import {fetchMeals} from '../store/mealSlice'
 
 function Login() {
    const navigate = useNavigate()
@@ -22,6 +23,7 @@ function Login() {
             const userData = await authService.getCurrentUser();
            if(userData) {
             dispatch(authLogin({userData}));
+            await dispatch(fetchMeals());
             navigate('/');
             }
         } 

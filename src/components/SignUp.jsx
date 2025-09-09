@@ -5,6 +5,7 @@ import {login} from '../store/authSlice'
 import {Button, Input, Logo} from './index'
 import { useDispatch } from 'react-redux'
 import { useForm } from 'react-hook-form'
+import {fetchMeals} from '../store/mealSlice'
 
 function SignUp() {
     const navigate = useNavigate();
@@ -18,6 +19,7 @@ function SignUp() {
                 const userData = await authService.getCurrentUser()
                 if(userData) {
                 dispatch(login(userData));
+                dispatch(fetchMeals());
                 navigate('/')
                 }
             }

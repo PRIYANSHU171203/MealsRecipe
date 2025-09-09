@@ -42,7 +42,11 @@ const router = createBrowserRouter([
       },
       {
         path:"/meals",
-        element: <AllMeals />
+        element: (
+          <AuthLayout authentication={true}>
+            <AllMeals/>
+          </AuthLayout>
+        )
       },
       {
         path:"/meal/:id",
