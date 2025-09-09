@@ -50,22 +50,17 @@ function SignUp() {
     try {
         const userData = await authService.createAccount(data);
         if (userData) {
-             const currentUser = await authService.getCurrentUser();
-            if (currentUser) {
-                dispatch(login(currentUser));
-                dispatch(fetchMeals());
-                toast.success("Account created successfully. Please verify your email.");
-
-            // Send verification email
+             // Send verification email
             await authService.sendVerificationEmail();
+            toast.success("Account created successfully. Please verify your email.");
+      
             setLoading(true);
                 setTimeout(() => {
                     setLoading(false);
                     navigate("/verify"); // or "/"
                 }, 2000);
             
-        
-        }}
+        }
     } catch (error) {
         console.log("sign up error", error);
         if (error?.code === 409) {
