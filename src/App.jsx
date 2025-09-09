@@ -5,6 +5,7 @@ import {login, logout} from './store/authSlice'
 import { Footer, Header, Loader } from './components'
 import { Outlet } from 'react-router-dom'
 import { clearMeals} from './store/mealSlice'
+import {Toaster} from 'react-hot-toast'
 
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
       <Header />
       <main className='flex-grow'>
       <Outlet />
+       <Toaster position="bottom-center" reverseOrder={false} />
       </main>
       <Footer />
     </div>

@@ -23,6 +23,7 @@ export class AuthService {
 
             } catch (error) {
                 console.log("Appwrite :: Create Account :: Error ", error);
+                throw error;
             }
         }
 
@@ -33,6 +34,7 @@ export class AuthService {
                             return session; 
             } catch (error) {
                 console.log("Appwrite :: Login :: Error ", error);
+                throw error;
                 
             }
         }
@@ -52,7 +54,7 @@ export class AuthService {
                 await this.account.deleteSession("current");
             } catch (error) {
                 console.log("Appwrite :: Logout :: Error ", error);
-                
+                throw error;
             }
         }
 

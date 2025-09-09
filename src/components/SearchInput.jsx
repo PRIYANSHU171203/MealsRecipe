@@ -1,10 +1,13 @@
 import React, { useEffect} from 'react'
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchQuery } from "../store/mealSlice";
+import { useLocation } from "react-router-dom";
+
 
 function SearchInput() {
      const dispatch = useDispatch();
      const searchQuery = useSelector((state) => state.meals.searchQuery);
+     const location = useLocation();
    
      useEffect(() => {
          const params = new URLSearchParams(location.search);
@@ -12,7 +15,7 @@ function SearchInput() {
          if (query) {
            dispatch(setSearchQuery(query));
          }
-       }, [location.search, dispatch]);
+       }, [location, dispatch]);
    
     return (
        

@@ -6,31 +6,40 @@ import authService from '../appwrite/auth'
 import {login as authLogin} from '../store/authSlice'
 import {useForm} from 'react-hook-form'
 import {fetchMeals} from '../store/mealSlice'
+import showpass from '../assets/showpass.svg'
+import hidepass from '../assets/hidepass.svg'
+import toast from 'react-hot-toast'
+
 
 function Login() {
    const navigate = useNavigate()
    const dispatch = useDispatch()
    const {register, handleSubmit} = useForm()
-   const [error, setError] = React.useState('')
    const [loading, setLoading] = React.useState(false)
+   const [showPassword, setShowPassword] = React.useState(false) 
 
    const login = async (data) =>{
-    setError('');
-    setLoading(true);
+        setLoading(true);
     try {
         const session = await authService.login(data);
         if(session){
             const userData = await authService.getCurrentUser();
            if(userData) {
             dispatch(authLogin({userData}));
-            await dispatch(fetchMeals());
-            navigate('/');
+            dispatch(fetchMeals());
+            toast.success('Login successful');
+            setTimeout(() => {
+                navigate('/');
+            }, 10000);
+            
             }
         } 
             
     } catch (error) {
         console.log("login error", error)
-        setError(error ?.message || 'Something went wrong')
+        const message =  "Something went wrong. Please check Email & Password";
+        toast.error(message);
+        
     }finally{
         setLoading(false)
     }
@@ -54,7 +63,7 @@ function Login() {
                         Sign Up
                     </Link>
                 </p>
-                {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
+                
                 <form onSubmit={handleSubmit(login)} className='mt-8'>
                   <div className='space-y-5'>
                     <Input 
@@ -70,12 +79,28 @@ function Login() {
                         }
                      })}
                     />  
-                    <Input 
-                    label = "Password:"
-                    placeholder = "Enter your password"
-                    type = "password"
-                    {...register('password', { required: true})}
-                    />
+                    <div className="relative">
+                        <Input
+                            label="Password:"
+                            placeholder="Enter your password"
+                            type={showPassword ? 'text' : 'password'}
+                            {...register('password', { required: true })}
+                            />
+                        <span
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-9 cursor-pointer text-gray-600 hover:text-black"
+                        >
+                                {showPassword ? (
+                            <div>
+                                <img src={showpass} alt="showpass" className='w-6 h-6' />
+                            </div>
+                            ) : (
+                            <div>
+                                <img src={hidepass} alt="hidepass" className='w-6 h-6' />
+                            </div>
+                            )}
+                        </span>
+                    </div>
                     <Button
                      type = 'submit'
                      className = 'py-2 rounded-md hover:bg-red-500 transition disabled:opacity-50'   
