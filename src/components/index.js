@@ -13,7 +13,7 @@ import SearchInput from "./SearchInput";
 import Loader from "./Loader";
 import Profile from "./Header/Profile";
 import Verify from "./Verify";
-import VerifyComplete from "./VerifyComplete";
+
 export {
     Header,
     Footer,
@@ -30,5 +30,5 @@ export {
     Loader,
     Profile,
     Verify,
-    VerifyComplete
+    
 }

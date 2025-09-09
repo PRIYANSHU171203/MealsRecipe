@@ -49,11 +49,11 @@ function Verify() {
           This page will update automatically once you’re verified.
         </p>
         <div className="mt-4 flex flex-col items-center">
-          {checking ? (
-            <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-red-500"></div>
-          ) : (
+          {checking ?(
             <div className="text-gray-500">Still waiting...</div>
-          )}
+          ): (
+            <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-red-500"></div>
+          )  }
         </div>
       </div>
     </div>
