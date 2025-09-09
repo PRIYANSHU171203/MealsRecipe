@@ -29,9 +29,8 @@ function Login() {
             dispatch(fetchMeals());
             toast.success('Login successful');
             setTimeout(() => {
-                navigate('/');
-            }, 10000);
-            
+                        navigate("/");
+                    }, 2000);
             }
         } 
             
