@@ -27,11 +27,38 @@ export class AuthService {
             }
         }
 
+        // inside AuthService
+
+        // Send verification email
+        async sendVerificationEmail() {
+            try {
+                const response = await this.account.createVerification(
+                    `${window.location.origin}/verify`
+                );
+                return response;
+            } catch (error) {
+                console.log("Appwrite :: Send Verification Email :: Error", error);
+                throw error;
+            }
+        }
+
+        // Complete verification when user clicks email link
+        async confirmVerification(userId, secret) {
+            try {
+                const response = await this.account.updateVerification(userId, secret);
+                return response;
+            } catch (error) {
+                console.log("Appwrite :: Complete Verification :: Error", error);
+                throw error;
+            }
+        }
+
+
         async login({email, password}){
             try {
                const session = await this.account.createEmailPasswordSession(email, password);
-                            console.log("Appwrite :: Login :: Session created", session);
-                            return session; 
+                return session;
+
             } catch (error) {
                 console.log("Appwrite :: Login :: Error ", error);
                 throw error;

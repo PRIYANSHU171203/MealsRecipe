@@ -4,6 +4,7 @@ import {  Link, NavLink } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { Button } from '../index'
 import LogoutBtn from './LogoutBtn'
+import Profile from './Profile'
 
 
 function Header() {
@@ -42,7 +43,7 @@ function Header() {
     <nav className='flex items-center justify-between'>
       
       {/* Logo */}
-      <div >
+      <div  className="bg-amber-50">
         <Link to={'/'}>
           <Logo />
         </Link>
@@ -74,10 +75,9 @@ function Header() {
               </li>
             )
         )}
-
         {authStatus && (
           <li>
-            <LogoutBtn />
+            <Profile />
           </li>
         )}
       </ul>

@@ -11,7 +11,8 @@ import AuthLayout from './AuthLayout'
 import MealCard from "./MealCard";
 import SearchInput from "./SearchInput";
 import Loader from "./Loader";
-import Profile from "./Profile";
+import Profile from "./Header/Profile";
+import Verify from "./Verify";
 
 export {
     Header,
@@ -28,4 +29,5 @@ export {
     SearchInput,
     Loader,
     Profile,
+    Verify
 }

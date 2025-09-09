@@ -7,11 +7,10 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 
 import store from './store/store.js'
-import { AuthLayout, Login, SignUp } from './components'
+import { AuthLayout, Login, SignUp, Verify } from './components'
 import Home from './pages/Home.jsx'
 import MealDetails from './pages/MealDetails.jsx'
 import AllMeals from './pages/AllMeals.jsx' 
-import {Loader} from './components'
 
 
 
@@ -51,6 +50,10 @@ const router = createBrowserRouter([
       {
         path:"/meal/:id",
         element: <MealDetails/>
+      },
+      {
+        path:"/verify",
+        element: <Verify/>
       }
     ],
   },
