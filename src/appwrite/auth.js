@@ -34,8 +34,8 @@ export class AuthService {
             try {
                 const redirectUrl =
                 import.meta.env.MODE === "development"
-                    ? "http://localhost:3000/verify-complete"
-                    : "https://meals-recipe-devils-projects-a9995fee.vercel.app/";
+                    ? "http://localhost:3000/verify"
+                    : "https://meals-recipe-devils-projects-a9995fee.vercel.app/verify";
 
     return await this.account.createVerification(redirectUrl);
             } catch (error) {
