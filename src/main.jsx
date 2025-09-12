@@ -7,12 +7,13 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 
 import store from './store/store.js'
-import { AuthLayout, Login, SignUp, Verify, VerifyComplete, MealForm } from './components'
+import { AuthLayout, Login, SignUp, Verify, MealForm } from './components'
 import Home from './pages/Home.jsx'
 import MealDetails from './pages/MealDetails.jsx'
 import AllMeals from './pages/AllMeals.jsx' 
 import UpdatePass from './pages/UpdatePass.jsx'
-import ForgotPass from './pages/ForgotPass.jsx'
+import ForgotPas from './pages/ForgotPass.jsx'
+import Recovery from './pages/Recovery.jsx'
 
 
 
@@ -42,17 +43,17 @@ const router = createBrowserRouter([
         )
       },
       {
+        path: '/forgot-password',
+        element:<ForgotPas />
+      },
+      {
         path: '/recovery',
         element:
-             <ForgotPass />
+             <Recovery />
       },
       {
         path:"/verify",
         element: <Verify/>
-      },
-      {
-        path:"/verify-complete",
-        element: <VerifyComplete/>
       },
       {
         path:"/meals",

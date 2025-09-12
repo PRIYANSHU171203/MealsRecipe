@@ -106,7 +106,10 @@ function Header() {
         {navItems.map(
           (item) =>
             item.active && (
-              <li key={item.name}>
+              <li 
+              key={item.name}
+              onClick={() => setMenuOpen(false)}
+              >
                 <NavLink
                   to={item.slug}
                   className={({ isActive }) =>

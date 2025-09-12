@@ -33,8 +33,8 @@ export class AuthService {
 
                         const redirectUrl =
                         import.meta.env.MODE === "development"
-                            ? "http://localhost:3000/verify-complete"
-                            : "https://meals-recipe-devils-projects-a9995fee.vercel.app/verify-complete";
+                            ? "http://localhost:3000/verify"
+                            : "https://meals-recipe-devils-projects-a9995fee.vercel.app/verify";
 
                         return await this.account.createVerification(redirectUrl);
                     } catch (error) {
@@ -100,6 +100,7 @@ export class AuthService {
                 
             } catch (error) {
                 console.log("Appwrite :: Sent Recovery Email :: Error ", error);
+                throw error;
             }
             
         }
@@ -109,6 +110,7 @@ export class AuthService {
                 return await this.account.updateRecovery(userId, secret, newPassword);
             } catch (error) {
                 console.log("Appwrite :: Complete Recovery :: Error ", error);
+                throw error;
             }
         }
 
