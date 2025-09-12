@@ -1,6 +1,7 @@
 import conf from "../conf/conf"
 import {Client, Databases, ID, Query} from "appwrite";
 
+
 export class Service {
     client = new Client();
     databases;
@@ -83,24 +84,21 @@ export class Service {
     }
 
     // get all meals
-    async getMeals( query = ""){
-        try {
-            let queries = [];
-            if (query) {
-                queries.push(Query.search("strMeal", query)); // search by meal name
-            }
+    async getMeals({ limit = 100, offset = 0, search = "" } = {}) {
+    try {
+      let queries = [Query.limit(limit), Query.offset(offset)];
+      if (search) queries.push(Query.search("strMeal", search));
 
-            return await this.databases.listDocuments(
-                conf.appwriteDbId,
-                conf.appwriteCollectionId,
-                queries
-            );
-
-        } catch (error) {
-            console.log("Appwrite :: Get Meals :: Error ", error);
-            return false;
-        }
+      return await this.databases.listDocuments(
+        conf.appwriteDbId,
+        conf.appwriteCollectionId,
+        queries
+      );
+    } catch (error) {
+      console.log("Appwrite :: Get Meals :: Error ", error);
+      return { documents: [] };
     }
+  }
 }
 
 const service = new Service()

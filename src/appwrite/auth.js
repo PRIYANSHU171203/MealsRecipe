@@ -15,45 +15,47 @@ export class AuthService {
         this.account = new Account(this.client);
     }
 
-        async createAccount({email, password, username}){
+        async createAccount({email, password, name}){
             try {
-                const userAccount = await this.account.create(ID.unique(), email, password, username);
-                if(userAccount) return this.login({email, password});
-                else return userAccount;
+                const userAccount = await this.account.create(ID.unique(), email, password, name);
+                return userAccount;
 
-            } catch (error) {
-                console.log("Appwrite :: Create Account :: Error ", error);
-                throw error;
+                } catch (error) {
+                    console.log("Appwrite :: Create Account :: Error ", error);
+                    throw error;
+                }
             }
-        }
 
-        // inside AuthService
+        async sendVerificationEmail(email, password) {
+             try {
+                        // make sure session exists
+                        await this.account.createEmailPasswordSession(email, password);
 
-        // Send verification email
-        async sendVerificationEmail() {
-            try {
-                const redirectUrl =
-                import.meta.env.MODE === "development"
-                    ? "http://localhost:3000/verify"
-                    : "https://meals-recipe-devils-projects-a9995fee.vercel.app/verify";
+                        const redirectUrl =
+                        import.meta.env.MODE === "development"
+                            ? "http://localhost:3000/verify-complete"
+                            : "https://meals-recipe-devils-projects-a9995fee.vercel.app/verify-complete";
 
-    return await this.account.createVerification(redirectUrl);
-            } catch (error) {
-                console.log("Appwrite :: Send Verification Email :: Error", error);
-                throw error;
+                        return await this.account.createVerification(redirectUrl);
+                    } catch (error) {
+                        console.log("Appwrite :: Send Verification Email :: Error", error);
+                        throw error;
+                    }
+                }
+
+                // Complete verification when user clicks the email link
+            async confirmVerification(userId, secret) {
+                try {
+                        const response = await this.account.updateVerification(userId, secret);
+                        return response;
+                } catch (error) {
+                    console.log("Appwrite :: Complete Verification :: Error", error);
+                    throw error;
+                }
             }
-        }
 
-        // Complete verification when user clicks email link
-        async confirmVerification(userId, secret) {
-            try {
-                const response = await this.account.updateVerification(userId, secret);
-                return response;
-            } catch (error) {
-                console.log("Appwrite :: Complete Verification :: Error", error);
-                throw error;
-            }
-        }
+
+        
 
 
         async login({email, password}){
@@ -80,16 +82,31 @@ export class AuthService {
 
         async logout(){
             try {
-                await this.account.deleteSession("current");
-            } catch (error) {
-                console.log("Appwrite :: Logout :: Error ", error);
-                throw error;
-            }
+                    await this.account.deleteSession("current");
+                } catch (error) {
+                    if (error.code === 401) {
+                    console.log("No active session, already logged out.");
+                    return; // just exit quietly
+                    }
+                    console.log("Appwrite :: Logout :: Error ", error);
+                    throw error;
+                }
         }
 
 
         //update password service
-        //update usename
+        async updatePass(newPassword, oldPassword) {
+            try {
+                 if (oldPassword) {
+                    return await this.account.updatePassword(newPassword, oldPassword);
+                    } else {
+                    return await this.account.updatePassword(newPassword);
+                    }
+            } catch (error) {
+                console.log("Appwrite :: Update Password :: Error ", error);
+                throw error;
+            }
+        }
 
 
     

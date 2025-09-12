@@ -1,37 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { Client, Databases, Query } from "appwrite";
-import conf from "../conf/conf";
+import service from "../appwrite/config"; // ✅ use single Service.js
 
-// ✅ Appwrite Client
-const client = new Client()
-  .setEndpoint(conf.appwriteUrl)
-  .setProject(conf.appwriteProjectId);
-
-const databases = new Databases(client);
-
-// IDs
-const DB_ID = conf.appwriteDbId;
-const Collection_ID = conf.appwriteCollectionId;
-
-// ✅ Fetch all meals once on load
+// ✅ Fetch all meals (with pagination support)
 export const fetchMeals = createAsyncThunk("meals/fetchMeals", async () => {
   try {
-    const response = await databases.listDocuments(DB_ID, Collection_ID, [
-      // fetch maximum items in one call
-      // Appwrite allows limit up to 100, so we may need to paginate
-    ]);
-
     let allMeals = [];
     let page = 0;
     const limit = 100;
 
     while (true) {
-      const res = await databases.listDocuments(DB_ID, Collection_ID, [
-        // fetch 100 items per request
-        Query.limit(limit),
-        Query.offset(page * limit),
+      const res = await service.getMeals({
+        limit,
+        offset: page * limit,
+      });
 
-      ]);
       allMeals = [...allMeals, ...res.documents];
       if (res.documents.length < limit) break;
       page++;
@@ -44,25 +26,46 @@ export const fetchMeals = createAsyncThunk("meals/fetchMeals", async () => {
   }
 });
 
+// ✅ Update Meal
+export const updateMeal = createAsyncThunk(
+  "meals/updateMeal",
+  async ({ id, data }) => {
+    const res = await service.updateMeal(id, data);
+    return res;
+  }
+);
+
+// ✅ Delete Meal
+export const deleteMeal = createAsyncThunk(
+  "meals/deleteMeal",
+  async (id) => {
+    await service.deleteMeal(id);
+    return id; // return deleted meal id
+  }
+);
+
+
 const mealSlice = createSlice({
   name: "meals",
   initialState: {
-    meals: [], // all meals (293)
-    filteredMeals: [], // filtered view
-    visibleMeals: [], // for lazy loading
+    meals: [],            // all meals
+    filteredMeals: [],    // search results
+    visibleMeals: [],     // lazy loaded meals for UI
     loading: false,
     error: null,
     searchQuery: "",
-    itemsPerPage: 20, // how many to show at once
+    itemsPerPage: 20,     // meals per page
     currentPage: 1,
   },
   reducers: {
     setSearchQuery: (state, action) => {
       state.searchQuery = action.payload.toLowerCase();
-      // filter meals based on search
+
+      // filter meals by search
       state.filteredMeals = state.meals.filter((meal) =>
         meal.strMeal.toLowerCase().includes(state.searchQuery)
       );
+
       // reset pagination
       state.currentPage = 1;
       state.visibleMeals = state.filteredMeals.slice(0, state.itemsPerPage);
@@ -95,7 +98,24 @@ const mealSlice = createSlice({
       .addCase(fetchMeals.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+      .addCase(updateMeal.fulfilled, (state, action) => {
+        const index = state.meals.findIndex(m => m.$id === action.payload.$id);
+        if (index !== -1) {
+          state.meals[index] = action.payload;
+        }
+        // Re-apply filter + pagination
+        state.filteredMeals = state.meals.filter((meal) =>
+          meal.strMeal.toLowerCase().includes(state.searchQuery)
+        );
+        state.visibleMeals = state.filteredMeals.slice(0, state.currentPage * state.itemsPerPage);
+      })
+        .addCase(deleteMeal.fulfilled, (state, action) => {
+        state.meals = state.meals.filter(m => m.$id !== action.payload);
+        state.filteredMeals = state.filteredMeals.filter(m => m.$id !== action.payload);
+        state.visibleMeals = state.visibleMeals.filter(m => m.$id !== action.payload);
       });
+
   },
 });
 

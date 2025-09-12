@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import LogoutBtn from "./LogoutBtn"; // your logout button component
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
   const [open, setOpen] = useState(false);
   const profileRef = useRef(null);
+  const navigate = useNavigate();
 
   // Get user data from redux
   const user = useSelector((state) => state.auth.userData);
@@ -39,9 +41,26 @@ function Profile() {
             <p className="text-sm text-gray-500">{user?.email || "No Email"}</p>
           </div>
 
+          {/* Admin- add Meals */}
+          {user?.labels?.includes("admin") && (
+            <button
+               onClick={() => {
+                setOpen(false);
+                navigate("/meal/add"); // use React Router navigation
+              }}
+              className="w-full px-4 py-2 text-left text-sm bg-gray-100 hover:bg-gray-200  rounded-md mb-2"
+            >
+              Add New Meal
+            </button>
+          )}
+
+
           {/* Update Password */}
           <button
-            onClick={() => alert("Redirect to update password page")}
+            onClick={() => {
+              setOpen(false);
+              navigate("/update-password");
+            }}
             className="w-full px-4 py-2 text-left text-sm bg-gray-100 hover:bg-gray-200 rounded-md mb-2"
           >
             Update Password

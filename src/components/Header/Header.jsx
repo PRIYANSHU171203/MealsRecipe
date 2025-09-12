@@ -43,11 +43,11 @@ function Header() {
     <nav className='flex items-center justify-between'>
       
       {/* Logo */}
-      <div  className="bg-amber-50">
+      
         <Link to={'/'}>
           <Logo />
         </Link>
-      </div>
+     
 
       {/* Desktop Menu */}
       <ul className="hidden md:flex ml-auto mr-2 items-center gap-2">

@@ -1,64 +1,30 @@
 import React from 'react'
 import authService from '../appwrite/auth'
 import {Link, useNavigate} from 'react-router-dom'
-import {login} from '../store/authSlice'
 import {Button, Input, Logo} from './index'
 import Loader from './Loader'       
-import { useDispatch } from 'react-redux'
 import { useForm } from 'react-hook-form'
-import {fetchMeals} from '../store/mealSlice'
 import toast from 'react-hot-toast'
-import showpass from '../assets/showpass.svg'
-import hidepass from '../assets/hidepass.svg'
-
 
 function SignUp() {
     const [loading, setLoading] = React.useState(false);
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const [showPassword, setShowPassword] = React.useState(false)
    
     const {register, handleSubmit} = useForm();
-
-    
-    // const create = async(data) => {
-    //     try {
-    //         const userData = await authService.createAccount(data)
-    //         if(userData) {
-    //             const userData = await authService.getCurrentUser()
-    //             if(userData) {
-    //             dispatch(login(userData));
-    //             dispatch(fetchMeals());
-    //             toast.success('Account created successfully.');
-    //             setTimeout(() => {
-    //                  navigate('/')
-    //             },2000)
-    //             }
-    //         }
-    //     } catch (error) {
-    //         console.log("sign up error", error);
-    //          if (error?.code === 409) {
-    //                 toast.error("User already exists. Please log in instead.");
-    //             } else {
-    //                 toast.error(error?.message || "Something went wrong. Please try again.");
-    //             }
-           
-    //     }
-    // }
 
     const create = async (data) => {
     try {
         const userData = await authService.createAccount(data);
         if (userData) {
              // Send verification email
-            await authService.sendVerificationEmail();
+            await authService.sendVerificationEmail(data.email, data.password);
             toast.success("Account created successfully. Please verify your email.");
       
             setLoading(true);
                 setTimeout(() => {
                     setLoading(false);
                     navigate("/verify"); // or "/"
-                }, 2000);
+                }, 1000);
             
         }
     } catch (error) {
@@ -80,7 +46,7 @@ function SignUp() {
                         <Logo width="100%" />
                     </span>
                 </div>
-                <h2 className="text-center text-2xl font-bold leading-tight">Sign up to create account</h2>
+                <h2 className="text-center text-2xl font-bold leading-tight font-tinos">Sign up to create account</h2>
 
                 <p className="mt-2 text-center text-base text-black/60">
                     Already have an account?&nbsp;
@@ -95,9 +61,9 @@ function SignUp() {
                 <form onSubmit={handleSubmit(create)}>
                     <div className='space-y-5'>
                         <Input 
-                         label="Username:"
+                         label="Name:"
                          placeholder="Enter your username"
-                         {...register("username", {required: true})}
+                         {...register("name", {required: true})}
                         />
                         <Input 
                          label="Email:"
@@ -112,7 +78,7 @@ function SignUp() {
                         <Input
                             label="Password:"
                             placeholder="Enter your password"
-                            type={showPassword ? 'text' : 'password'}
+                            type= "password"
                             {...register('password', { 
                                 required: true,
                                 validate: {
@@ -121,26 +87,13 @@ function SignUp() {
                                     },
                             })}
                             />
-                            <span
-                            onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-9 cursor-pointer text-gray-600 hover:text-black"
-                            >
-                                {showPassword ? (
-                                <div>
-                                     <img src={showpass} alt="showpass" className='w-6 h-6' />
-                                </div>
-                                ) : (
-                                <div>
-                                    <img src={hidepass} alt="hidepass" className='w-6 h-6' />
-                                </div>
-                                )}
-                            </span>
                         </div>               
                          
                         <Button 
                          type = "submit"
-                         className="w-full"
-                        >Create Account</Button>
+                         className="w-full hover:bg-gradient-to-r from-pink-400/50 via-purple-500/50 to-indigo-500/50 transition disabled:opacity-50 duration"
+                         disabled={loading}
+                        >{loading ? (<Loader />) : "Create Account"}</Button>
                     </div>
                 </form>
             </div>

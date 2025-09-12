@@ -5,7 +5,7 @@ import authService from "../appwrite/auth";
 import { login as authLogin } from "../store/authSlice";
 import { fetchMeals } from "../store/mealSlice";
 import toast from "react-hot-toast";
-import Loader from "./Loader";
+
 
 function Verify() {
   const [checking, setChecking] = useState(false);

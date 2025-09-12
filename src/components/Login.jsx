@@ -6,8 +6,6 @@ import authService from '../appwrite/auth'
 import {login as authLogin} from '../store/authSlice'
 import {useForm} from 'react-hook-form'
 import {fetchMeals} from '../store/mealSlice'
-import showpass from '../assets/showpass.svg'
-import hidepass from '../assets/hidepass.svg'
 import toast from 'react-hot-toast'
 
 
@@ -16,7 +14,6 @@ function Login() {
    const dispatch = useDispatch()
    const {register, handleSubmit} = useForm()
    const [loading, setLoading] = React.useState(false)
-   const [showPassword, setShowPassword] = React.useState(false) 
 
    const login = async (data) =>{
         setLoading(true);
@@ -37,8 +34,11 @@ function Login() {
             
     } catch (error) {
         console.log("login error", error)
-        const message =  "Something went wrong. Please check Email & Password";
-        toast.error(message);
+         if (error?.code === 401) {
+            toast.error("Email Verification is not done yet.");
+        } else {
+            toast.error(error?.message || "Something went wrong. Please try again.");
+        }
         
     }finally{
         setLoading(false)
@@ -53,7 +53,7 @@ function Login() {
                         <Logo  />
                     </span>
             </div>
-            <h2 className='text-center text-2xl font-bold leading-tight'>Sign in to your account</h2>
+            <h2 className='text-center text-2xl font-bold leading-tight font-tinos'>Sign in to your account</h2>
             <p className="mt-2 text-center text-base text-black/60">
                     Don&apos;t have any account?&nbsp;
                     <Link
@@ -83,27 +83,15 @@ function Login() {
                         <Input
                             label="Password:"
                             placeholder="Enter your password"
-                            type={showPassword ? 'text' : 'password'}
+                            type= "password"
                             {...register('password', { required: true })}
                             />
-                        <span
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-9 cursor-pointer text-gray-600 hover:text-black"
-                        >
-                                {showPassword ? (
-                            <div>
-                                <img src={showpass} alt="showpass" className='w-6 h-6' />
-                            </div>
-                            ) : (
-                            <div>
-                                <img src={hidepass} alt="hidepass" className='w-6 h-6' />
-                            </div>
-                            )}
-                        </span>
+                        <Link to= "/forgot-password" className="text-sm pl-3 text-blue-600 font-semibold underline cursor-pointer">Forgot Password</Link>
                     </div>
+
                     <Button
                      type = 'submit'
-                     className = 'py-2 rounded-md hover:bg-red-500 transition disabled:opacity-50'   
+                     className = 'py-2 rounded-md hover:bg-red-500 transition disabled:opacity-50 delay-300 duration-300'   
                      disabled = {loading}
                     >
                        {loading ? "Signing in..." : "Sign in"}     
