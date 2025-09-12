@@ -92,4 +92,4 @@ function UpdatePass() {
     )
 }
 
-export default UpdatePass
+export default UpdatePass;

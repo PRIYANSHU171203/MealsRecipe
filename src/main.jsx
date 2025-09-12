@@ -11,7 +11,7 @@ import { AuthLayout, Login, SignUp, Verify, VerifyComplete, MealForm } from './c
 import Home from './pages/Home.jsx'
 import MealDetails from './pages/MealDetails.jsx'
 import AllMeals from './pages/AllMeals.jsx' 
-import UpdatePass from './pages/updatePass.jsx'
+import UpdatePass from './pages/UpdatePass.jsx'
 
 
 
