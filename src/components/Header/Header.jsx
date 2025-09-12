@@ -37,8 +37,8 @@ function Header() {
     ]
 
     return (
-        <header className='sticky top-0 z-50 shadow-md 
-  bg-gradient-to-r from-pink-400/50 via-purple-500/50 to-indigo-500/50 backdrop-blur-lg px-6  rounded-2xl m-2 mb-6'>
+        <header className='sticky  top-0 z-50 shadow-md 
+  bg-gradient-to-r from-pink-400/50 via-purple-500/50 to-indigo-500/50 backdrop-blur-lg  rounded-2xl m-2 mb-6'>
   <Container>
     <nav className='flex items-center justify-between'>
       
@@ -80,22 +80,29 @@ function Header() {
             <Profile />
           </li>
         )}
+        
       </ul>
 
       {/* Mobile Hamburger */}
-      <div className="md:hidden">
+      <div className="md:hidden flex ">
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="text-white p-2 rounded-full hover:bg-white/20"
         >
           ☰
         </button>
+        {authStatus && (
+          
+            <Profile />
+          
+        )}
       </div>
     </nav>
 
     {/* Mobile Dropdown */}
     {menuOpen && (
       <ul className="flex flex-col gap-2 mt-2 md:hidden bg-white/20 backdrop-blur-lg p-4 rounded-lg">
+        
         {navItems.map(
           (item) =>
             item.active && (
@@ -121,6 +128,7 @@ function Header() {
         {authStatus && <LogoutBtn />}
       </ul>
     )}
+    
   </Container>
 </header>
 

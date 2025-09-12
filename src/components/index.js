@@ -12,8 +12,8 @@ import MealCard from "./MealCard";
 import SearchInput from "./SearchInput";
 import Loader from "./Loader";
 import Profile from "./Header/Profile";
-import Verify from "./Verify";
-import VerifyComplete from "./VerifyComplete";
+import Verify from "../pages/Verify";
+import VerifyComplete from "../pages/VerifyComplete";
 import MealForm from "./MealForm";
 import { ConfirmDeleteToast } from "./ConfirmDelete";
 

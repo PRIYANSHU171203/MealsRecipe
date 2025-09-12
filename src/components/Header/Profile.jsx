@@ -23,6 +23,7 @@ function Profile() {
   }, []);
 
   return (
+    <>
     <div className="relative" ref={profileRef}>
       {/* Profile Avatar */}
       <div
@@ -72,6 +73,8 @@ function Profile() {
         </div>
       )}
     </div>
+      </>
+   
   );
 }
 

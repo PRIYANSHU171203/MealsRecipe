@@ -12,6 +12,7 @@ import Home from './pages/Home.jsx'
 import MealDetails from './pages/MealDetails.jsx'
 import AllMeals from './pages/AllMeals.jsx' 
 import UpdatePass from './pages/UpdatePass.jsx'
+import ForgotPass from './pages/ForgotPass.jsx'
 
 
 
@@ -39,6 +40,11 @@ const router = createBrowserRouter([
             <SignUp />
           </AuthLayout>
         )
+      },
+      {
+        path: '/recovery',
+        element:
+             <ForgotPass />
       },
       {
         path:"/verify",

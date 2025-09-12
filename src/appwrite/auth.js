@@ -54,10 +54,6 @@ export class AuthService {
                 }
             }
 
-
-        
-
-
         async login({email, password}){
             try {
                const session = await this.account.createEmailPasswordSession(email, password);
@@ -91,6 +87,29 @@ export class AuthService {
                     console.log("Appwrite :: Logout :: Error ", error);
                     throw error;
                 }
+        }
+
+        async sentRecoveryEmail(email){
+            try {
+                
+                const redirectUrl =
+                import.meta.env.MODE === "development"
+                            ? "http://localhost:3000/recovery"
+                            : "https://meals-recipe-devils-projects-a9995fee.vercel.app/recovery";
+                return await this.account.createRecovery(email, redirectUrl);
+                
+            } catch (error) {
+                console.log("Appwrite :: Sent Recovery Email :: Error ", error);
+            }
+            
+        }
+
+        async completeRecovery(userId, secret, newPassword) {
+            try {
+                return await this.account.updateRecovery(userId, secret, newPassword);
+            } catch (error) {
+                console.log("Appwrite :: Complete Recovery :: Error ", error);
+            }
         }
 
 
