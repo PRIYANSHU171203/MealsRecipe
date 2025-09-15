@@ -1,6 +1,6 @@
 import conf from "../conf/conf";
 import { Client, Account, ID } from "appwrite";
-
+import { safeStorage } from "../utils/safeStorage";
 
 
 export class AuthService {
@@ -10,7 +10,7 @@ export class AuthService {
     constructor(){
         this.client
         .setEndpoint(conf.appwriteUrl)
-        .setProject(conf.appwriteProjectId);
+        .setProject(conf.appwriteProjectId)
         
         this.account = new Account(this.client);
     }
@@ -26,12 +26,9 @@ export class AuthService {
                 }
             }
 
-        async sendVerificationEmail(email, password) {
-             try {
-                        // make sure session exists
-                        await this.account.createEmailPasswordSession(email, password);
-
-                        const redirectUrl =
+        async sendVerificationEmail() {
+             try {                      
+                     const redirectUrl =
                         import.meta.env.MODE === "development"
                             ? "http://localhost:3000/verify"
                             : "https://meals-recipe-devils-projects-a9995fee.vercel.app/verify";
@@ -43,7 +40,6 @@ export class AuthService {
                     }
                 }
 
-                // Complete verification when user clicks the email link
         async confirmVerification(userId, secret) {
                 try {
                         const response = await this.account.updateVerification(userId, secret);
@@ -56,8 +52,9 @@ export class AuthService {
 
         async login({email, password}){
             try {
-               const session = await this.account.createEmailPasswordSession(email, password);
-                return session;
+               const session =  await this.account.createEmailPasswordSession(email, password);
+               safeStorage.setItem("sessionId", session.$id);
+               return session;
 
             } catch (error) {
                 console.log("Appwrite :: Login :: Error ", error);
@@ -65,6 +62,7 @@ export class AuthService {
                 
             }
         }
+        
         async getCurrentUser(){
             try {
                 return await this.account.get();
@@ -79,6 +77,7 @@ export class AuthService {
         async logout(){
             try {
                     await this.account.deleteSession("current");
+                    safeStorage.removeItem("sessionId");
                 } catch (error) {
                     if (error.code === 401) {
                     console.log("No active session, already logged out.");

@@ -17,7 +17,8 @@ function SignUp() {
         const userData = await authService.createAccount(data);
         if (userData) {
              // Send verification email
-            await authService.sendVerificationEmail(data.email, data.password);
+            await authService.login({email: data.email, password: data.password});
+            await authService.sendVerificationEmail();
             toast.success("Account created successfully. Please verify your email.");
       
             setLoading(true);
