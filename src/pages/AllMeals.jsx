@@ -1,8 +1,7 @@
-
 import { useDispatch, useSelector } from "react-redux";
 import {SearchInput, MealCard, Loader} from '../components'
 import { loadMoreMeals } from "../store/mealSlice";
-
+import { ScrollToTopButton } from "../components/Button";
 
 
 
@@ -39,6 +38,8 @@ function AllMeals() {
           Load More
         </button>
       )}
+
+      <ScrollToTopButton />
     </div>
   );
 }

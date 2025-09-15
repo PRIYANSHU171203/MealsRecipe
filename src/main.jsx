@@ -7,14 +7,16 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 
 import store from './store/store.js'
-import { AuthLayout, Login, SignUp, Verify, MealForm } from './components'
+import { AuthLayout, Login, SignUp, MealForm } from './components'
 import Home from './pages/Home.jsx'
+import Verify from './pages/Verify.jsx'
 import MealDetails from './pages/MealDetails.jsx'
 import AllMeals from './pages/AllMeals.jsx' 
 import UpdatePass from './pages/UpdatePass.jsx'
 import ForgotPas from './pages/ForgotPass.jsx'
 import Recovery from './pages/Recovery.jsx'
-
+import About from './pages/About.jsx'
+import Contact from './pages/Contact.jsx'
 
 
 const router = createBrowserRouter([
@@ -41,6 +43,14 @@ const router = createBrowserRouter([
             <SignUp />
           </AuthLayout>
         )
+      },
+      {
+        path: '/about',
+        element:<About />
+      },
+      {
+        path: '/contact',
+        element:<Contact />
       },
       {
         path: '/forgot-password',

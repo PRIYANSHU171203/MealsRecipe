@@ -67,7 +67,7 @@ function Profile() {
             Update Password
           </button>
 
-          <div className="w-full">
+          <div className="w-full hidden md:block">
               <LogoutBtn />
           </div>
         </div>

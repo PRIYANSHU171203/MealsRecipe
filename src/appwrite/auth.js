@@ -44,7 +44,7 @@ export class AuthService {
                 }
 
                 // Complete verification when user clicks the email link
-            async confirmVerification(userId, secret) {
+        async confirmVerification(userId, secret) {
                 try {
                         const response = await this.account.updateVerification(userId, secret);
                         return response;
