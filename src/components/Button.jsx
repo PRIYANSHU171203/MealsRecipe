@@ -13,7 +13,7 @@ export default function Button({
     return (
         <button 
         type={type}
-        className= {`px-4 py-2 rounded-lg cursor-pointer  ${bgColor} ${textColor} ${className}`} {...props}>
+        className= {`px-4 py-2 rounded-lg cursor-pointer  ${bgColor} hover:bg-blue-700 ${textColor} ${className}`} {...props}>
             {children}
         </button>
     )
@@ -50,9 +50,9 @@ export  function ScrollToTopButton() {
          <button
             onClick={scrollToTop}
             className={`
-            fixed bottom-6 right-6 bg-blue-600 text-white p-1 rounded-full shadow-lg 
-            hover:bg-blue-800 transition-all duration-500 ease-in-out
-            ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"}
+            fixed bottom-6 right-6 bg-blue-500 text-white p-1 rounded-full shadow-lg 
+            hover:bg-blue-700 transition-all duration-500 ease-in-out cursor-pointer
+           
             `}
         >
             <FontAwesomeIcon icon={faCircleUp} size="2xl" />

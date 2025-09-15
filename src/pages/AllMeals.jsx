@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import {SearchInput, MealCard, Loader} from '../components'
+import {SearchInput, MealCard, Loader, Button} from '../components'
 import { loadMoreMeals } from "../store/mealSlice";
 import { ScrollToTopButton } from "../components/Button";
 
@@ -31,12 +31,12 @@ function AllMeals() {
       </ul>
       {/* 📥 Lazy Load Button */}
       {visibleMeals.length < filteredMeals.length && (
-        <button
+        <Button
           onClick={() => dispatch(loadMoreMeals())}
-          className="mt-4 p-2 bg-blue-500 text-white rounded"
+          className="mt-4 p-2  text-white rounded"
         >
           Load More
-        </button>
+        </Button>
       )}
 
       <ScrollToTopButton />

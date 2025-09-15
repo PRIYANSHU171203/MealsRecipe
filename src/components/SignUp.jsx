@@ -64,14 +64,14 @@ function SignUp() {
                         <Input 
                          label="Name:"
                          placeholder="Enter your username"
-                         {...register("name", {required: true})}
+                         {...register("name", {required:(value) => !!value || "Name is required"})}
                         />
                         <Input 
                          label="Email:"
                          placeholder="Enter your email"
                          type="email"
                          {...register("email", {
-                            required:true,
+                            required:(value) => !!value || "Email is required",
                         matchPattern: (value) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) || "Email address must be a valid address",
                         })}
                         />
@@ -81,7 +81,7 @@ function SignUp() {
                             placeholder="Enter your password"
                             type= "password"
                             {...register('password', { 
-                                required: true,
+                                required: (value) => !!value || "Password is required",
                                 validate: {
                                     minLength: (value) =>
                                         value.length >= 8 || "Password must be at least 8 characters",

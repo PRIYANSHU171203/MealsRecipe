@@ -22,20 +22,28 @@ function Login() {
         if(session){
             const userData = await authService.getCurrentUser();
             console.log(userData);
-           if(userData) {
+
+            if (!userData) {
+                toast.error("User not found, please signup first.");
+                return;
+            }
+
+             if (!userData.emailVerification) {
+                toast.error("Please verify your email first.");
+                await authService.logout(); // logout so session is cleared
+                return;
+            }
+
             dispatch(authLogin(userData));
             dispatch(fetchMeals());
-            toast.success('Login successful');
-            setTimeout(() => {
-                        navigate("/");
-                    }, 2000);
-            }
+            toast.success("Login successful");
+            setTimeout(() => navigate("/"), 2000);
         } 
             
     } catch (error) {
         console.log("login error", error)
          if (error?.code === 401) {
-            toast.error("Email Verification is not done yet.");
+            toast.error("Email or password is incorrect.");
         } else {
             toast.error(error?.message || "Something went wrong. Please try again.");
         }
@@ -72,7 +80,7 @@ function Login() {
                      type = "email"
                      {...register('email',{
                         required: true,
-                        validate: {
+                        validate: {required: (value) => !!value || "Email is required",
                             matchPattern: (value) =>
                                  /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
                                 .test(value) || "Invalid Email address"
@@ -84,7 +92,7 @@ function Login() {
                             label="Password:"
                             placeholder="Enter your password"
                             type= "password"
-                            {...register('password', { required: true })}
+                            {...register('password', { required:(value) => !!value || "Password is required"})}
                             />
                         <Link to= "/forgot-password" className="text-sm pl-3 text-blue-600 font-semibold underline cursor-pointer">Forgot Password</Link>
                     </div>
