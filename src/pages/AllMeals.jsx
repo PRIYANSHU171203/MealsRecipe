@@ -24,7 +24,7 @@ function AllMeals() {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       {/* 🍲 Meals */}
-       <ul className="grid grid-cols-2 md:grid-cols-4 gap-4 ">
+       <ul className=" grid gap-6 grid-cols-2 md:grid-cols-3 xl:grid-cols-4 ">
         {visibleMeals.map((meal) => (
           <MealCard key={meal.$id} {...meal} />
         ))}

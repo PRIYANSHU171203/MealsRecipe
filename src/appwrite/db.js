@@ -1,4 +1,4 @@
-import conf from "../conf/conf"
+import config from "../config/config"
 import {Client, Databases, ID, Query} from "appwrite";
 
 
@@ -9,8 +9,8 @@ export class Service {
 
     constructor(){
         this.client
-        .setEndpoint(conf.appwriteUrl)
-        .setProject(conf.appwriteProjectId);
+        .setEndpoint(config.appwriteUrl)
+        .setProject(config.appwriteProjectId);
 
         this.databases = new Databases(this.client);
     }
@@ -19,8 +19,8 @@ export class Service {
     async createMeal ({ strMeal, strMealThumb, strInstructions, ingredients, measures, strYoutube, strArea, strCategory }) {
         try {
            return await this.databases.createDocument(
-            conf.appwriteDbId,
-            conf.appwriteCollectionId,
+            config.appwriteDbId,
+            config.appwriteCollectionId,
             ID.unique(),
             {
                 strMeal,
@@ -36,7 +36,7 @@ export class Service {
            ) 
         } catch (error) {
             console.log("Appwrite :: Create Meal :: Error ", error);
-            
+            throw error;
         }
     }
 
@@ -44,14 +44,14 @@ export class Service {
     async updateMeal(id, data){
         try {
             return await this.databases.updateDocument(
-                conf.appwriteDbId,
-                conf.appwriteCollectionId,
+                config.appwriteDbId,
+                config.appwriteCollectionId,
                 id,
                 data
             )
         } catch (error) {
             console.log("Appwrite :: Update Meal :: Error ", error);
-            
+            throw error;
         }
     }
 
@@ -59,14 +59,14 @@ export class Service {
     async deleteMeal(id){
         try {
             await this.databases.deleteDocument(
-                conf.appwriteDbId,
-                conf.appwriteCollectionId,
+                config.appwriteDbId,
+                config.appwriteCollectionId,
                 id
             );
             return true
         } catch (error) {
             console.log("Appwrite :: Delete Meal :: Error ", error);
-            return false            
+            throw error;           
         }
     }
 
@@ -74,12 +74,13 @@ export class Service {
     async getMeal(id){
         try {
             return await this.databases.getDocument(
-                conf.appwriteDbId,
-                conf.appwriteCollectionId,
+                config.appwriteDbId,
+                config.appwriteCollectionId,
                 id
             );
         } catch (error) {
             console.log("Appwrite :: Get Meal :: Error ", error);
+            throw error;
         }
     }
 
@@ -90,8 +91,8 @@ export class Service {
       if (search) queries.push(Query.search("strMeal", search));
 
       return await this.databases.listDocuments(
-        conf.appwriteDbId,
-        conf.appwriteCollectionId,
+        config.appwriteDbId,
+        config.appwriteCollectionId,
         queries
       );
     } catch (error) {

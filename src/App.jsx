@@ -18,12 +18,7 @@ function App() {
     authService.getCurrentUser()
       .then((userData) => {
         if (userData) {
-          dispatch(login({
-          id: userData.$id,
-          email: userData.email,
-          name: userData.name,
-          labels: userData.labels || [],
-        }))
+          dispatch(login(userData))
           dispatch(fetchMeals());
         } else {
           dispatch(logout())
@@ -42,7 +37,7 @@ function App() {
         try {
           const user = await authService.getCurrentUser()
           if (user?.emailVerification) {
-            dispatch(login({ userData: user }))
+            dispatch(login(user))
             toast.success("Email verified successfully 🎉")
             navigate("/")
           }

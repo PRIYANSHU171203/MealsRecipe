@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import service from "../appwrite/config";
-import { useSelector } from "react-redux";
+import service from "../appwrite/db";
+import { useSelector, useDispatch } from "react-redux";
 import { Button, Loader, Input } from "../components";
 import { toast } from "react-hot-toast";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCirclePlus, faXmarkCircle } from '@fortawesome/free-solid-svg-icons'
+import {updateMeal, createMeal} from '../store/mealSlice'
 
 
 export default function MealForm() {
   const { id } = useParams(); // meal id for edit
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.auth);
   const isAdmin = userData?.labels?.includes("admin");
   const [visibleCount, setVisibleCount] = useState(5);
@@ -22,8 +24,8 @@ export default function MealForm() {
     strInstructions: "",
     strMealThumb: "",
     strYoutube: "",
-    ingredients: Array(20).fill(""),
-    measures: Array(20).fill(""),
+    ingredients: Array(25).fill(""),
+    measures: Array(25).fill(""),
   });
 
    // 2️⃣ fetchMeal function
@@ -32,6 +34,19 @@ export default function MealForm() {
     try {
       const res = await service.getMeal(mealId);
       if (res) {
+         const ingredients = [...(res.ingredients || [])]; 
+         const measures = [...(res.measures || [])];
+         while (ingredients.length < 25) ingredients.push("");
+         while (measures.length < 25) measures.push("");
+
+      // Find the last non-empty ingredient or measure
+      let lastFilledIndex = 0;
+      for (let i = 24; i >= 0; i--) {
+        if (ingredients[i] || measures[i]) {
+          lastFilledIndex = i + 1;
+          break;
+        }
+      }
         setMeal({
           strCategory: res.strCategory || "",
           strArea: res.strArea || "",
@@ -39,10 +54,12 @@ export default function MealForm() {
           strInstructions: res.strInstructions || "",
           strMealThumb: res.strMealThumb || "",
           strYoutube: res.strYoutube || "",
-          ingredients: res.ingredients || Array(20).fill(""),
-          measures: res.measures || Array(20).fill(""),
+          ingredients,
+          measures,
+    
         });
-        
+        const initialVisible = Math.max(lastFilledIndex+1,5);
+        setVisibleCount(Math.min(initialVisible, 25));
       }
     } catch (err) {
       console.error(err);
@@ -69,8 +86,8 @@ export default function MealForm() {
       strInstructions: "",
       strMealThumb: "",
       strYoutube: "",
-      ingredients: Array(20).fill(""),
-      measures: Array(20).fill(""),
+      ingredients: Array(25).fill(""),
+      measures: Array(25).fill(""),
       });
       setVisibleCount(5); // reset visible ingredient count
       setLoading(false);
@@ -95,7 +112,7 @@ export default function MealForm() {
   };
 
    const handleAddMore = () => {
-    setVisibleCount((prev) => Math.min(prev + 5, 20)); // add next 5
+    setVisibleCount((prev) => Math.min(prev + 5, 25)); // add next 5
   };
 
   const handleSubmit = async (e) => {
@@ -103,24 +120,18 @@ export default function MealForm() {
     setLoading(true);
 
     try {
-    let res;
+    
     if (id) {
-      res = await service.updateMeal(id, meal);
-      if (res) {
+     await(dispatch(updateMeal({id, data:meal})).unwrap()); // update meal
+      
         toast.success("Meal updated!");
         navigate("/meals");
-      }
+      
     } else {
       // Create new meal
-      res = await service.createMeal(meal);
-      if (res && res.$id) {
+      const res = await dispatch(createMeal(meal)).unwrap();
         toast.success("Meal added!");
-          
-
         navigate(`/meal/${res.$id}`);
-        // const newMeal = await service.getMeal(res.$id);
-        // if(newMeal) navigate(`/meal/${res.$id}`);
-      }
     }
   } catch (error) {
     console.error(error);
@@ -217,7 +228,7 @@ export default function MealForm() {
             />
           </div>
         ))}
-        {visibleCount < 20 && (
+        {visibleCount < 25 && (
           <Button
             type="button"
             onClick={handleAddMore}

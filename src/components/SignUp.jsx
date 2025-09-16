@@ -13,6 +13,7 @@ function SignUp() {
     const {register, handleSubmit} = useForm();
 
     const create = async (data) => {
+        setLoading(true);
     try {
         const userData = await authService.createAccount(data);
         if (userData) {
@@ -20,13 +21,8 @@ function SignUp() {
             await authService.login({email: data.email, password: data.password});
             await authService.sendVerificationEmail();
             toast.success("Account created successfully. Please verify your email.");
-      
-            setLoading(true);
-                setTimeout(() => {
-                    setLoading(false);
-                    navigate("/verify"); // or "/"
-                }, 1000);
-            
+            navigate("/verify");    
+           
         }
     } catch (error) {
         console.log("sign up error", error);
@@ -35,6 +31,8 @@ function SignUp() {
         } else {
             toast.error(error?.message || "Something went wrong. Please try again.");
         }
+    } finally {
+        setLoading(false);
     }
 };
 
@@ -81,11 +79,8 @@ function SignUp() {
                             placeholder="Enter your password"
                             type= "password"
                             {...register('password', { 
-                                required: (value) => !!value || "Password is required",
-                                validate: {
-                                    minLength: (value) =>
-                                        value.length >= 8 || "Password must be at least 8 characters",
-                                    },
+                                required:  "Password is required",
+                                 minLength: { value: 8, message: "Password must be at least 8 characters" },
                             })}
                             />
                         </div>               

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import service from "../appwrite/config"; // ✅ use single Service.js
+import service from "../appwrite/db"; // ✅ use single Service.js
 
 // ✅ Fetch all meals (with pagination support)
 export const fetchMeals = createAsyncThunk("meals/fetchMeals", async () => {
@@ -26,7 +26,17 @@ export const fetchMeals = createAsyncThunk("meals/fetchMeals", async () => {
   }
 });
 
-// ✅ Update Meal
+//  Create Meal
+export const createMeal = createAsyncThunk(
+  "meals/createMeal",
+  async (data) => {
+    const res = await service.createMeal(data);
+    return res;
+  }
+);
+
+
+//  Update Meal
 export const updateMeal = createAsyncThunk(
   "meals/updateMeal",
   async ({ id, data }) => {
@@ -35,7 +45,7 @@ export const updateMeal = createAsyncThunk(
   }
 );
 
-// ✅ Delete Meal
+//  Delete Meal
 export const deleteMeal = createAsyncThunk(
   "meals/deleteMeal",
   async (id) => {
@@ -53,23 +63,29 @@ const mealSlice = createSlice({
     visibleMeals: [],     // lazy loaded meals for UI
     loading: false,
     error: null,
-    searchQuery: "",
+    searchQueryRaw: "",
     itemsPerPage: 20,     // meals per page
     currentPage: 1,
   },
   reducers: {
     setSearchQuery: (state, action) => {
-      state.searchQuery = action.payload.toLowerCase();
+      // Keep original user input for UI
+      const raw = action.payload ? String(action.payload) : "";
+      state.searchQueryRaw = raw;
 
-      // filter meals by search
-      state.filteredMeals = state.meals.filter((meal) =>
-        meal.strMeal.toLowerCase().includes(state.searchQuery)
-      );
+      // Use lowercased value for filtering comparisons+      
+      const q = raw.trim().toLowerCase();
+
+      state.filteredMeals = state.meals.filter((meal) => {
+        const name = (meal?.strMeal || "").toString().toLowerCase();
+        return name.includes(q);
+      });
 
       // reset pagination
       state.currentPage = 1;
       state.visibleMeals = state.filteredMeals.slice(0, state.itemsPerPage);
     },
+    
     loadMoreMeals: (state) => {
       state.currentPage++;
       const end = state.currentPage * state.itemsPerPage;
@@ -79,7 +95,7 @@ const mealSlice = createSlice({
       state.meals = [];
       state.filteredMeals = [];
       state.visibleMeals = [];
-      state.searchQuery = "";
+      state.searchQueryRaw = "";
       state.currentPage = 1;
     }
   },
@@ -99,21 +115,41 @@ const mealSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
+      .addCase(createMeal.fulfilled, (state, action) => {
+        if(!action.payload) return ;
+        state.meals.push(action.payload);
+        const q = (state.searchQueryRaw || "").trim().toLowerCase();
+        state.filteredMeals = state.meals.filter((meal) =>
+          (meal?.strMeal || "").toString().toLowerCase().includes(q)
+      );
+      state.visibleMeals = state.filteredMeals.slice(0, state.currentPage * state.itemsPerPage);
+      })
       .addCase(updateMeal.fulfilled, (state, action) => {
-        const index = state.meals.findIndex(m => m.$id === action.payload.$id);
+        if (!action.payload) {
+          // nothing to do if payload missing
+          return;
+        }
+        const payloadId = action.payload.$id;
+        const index = state.meals.findIndex((m) => m.$id === payloadId);
         if (index !== -1) {
           state.meals[index] = action.payload;
+        } else {
+          // if not found, optionally push
+          state.meals.push(action.payload);
         }
         // Re-apply filter + pagination
+         const q = (state.searchQueryRaw || "").trim().toLowerCase();
         state.filteredMeals = state.meals.filter((meal) =>
-          meal.strMeal.toLowerCase().includes(state.searchQuery)
+          (meal?.strMeal || "").toString().toLowerCase().includes(q)
         );
         state.visibleMeals = state.filteredMeals.slice(0, state.currentPage * state.itemsPerPage);
       })
         .addCase(deleteMeal.fulfilled, (state, action) => {
-        state.meals = state.meals.filter(m => m.$id !== action.payload);
-        state.filteredMeals = state.filteredMeals.filter(m => m.$id !== action.payload);
-        state.visibleMeals = state.visibleMeals.filter(m => m.$id !== action.payload);
+          const id = action.payload;
+          if(!id) return ;
+        state.meals = state.meals.filter(m => m.$id !== id);
+        state.filteredMeals = state.filteredMeals.filter(m => m.$id !== id);
+        state.visibleMeals = state.visibleMeals.filter(m => m.$id !== id);
       });
 
   },
@@ -121,3 +157,4 @@ const mealSlice = createSlice({
 
 export const { setSearchQuery, loadMoreMeals, clearMeals } = mealSlice.actions;
 export default mealSlice.reducer;
+

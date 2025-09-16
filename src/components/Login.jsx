@@ -24,6 +24,8 @@ function Login() {
             console.log(userData);
 
             if (!userData) {
+                // clear session to avoid stale session without account
+                await authService.logout().catch(() => {});
                 toast.error("User not found, please signup first.");
                 return;
             }
@@ -79,11 +81,12 @@ function Login() {
                      placeholder = "Enter your email"
                      type = "email"
                      {...register('email',{
-                        required: true,
-                        validate: {required: (value) => !!value || "Email is required",
-                            matchPattern: (value) =>
-                                 /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
-                                .test(value) || "Invalid Email address"
+                        required: "Email is required",
+                        validate: {
+                            matchPattern: (value) => {
+                                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                return emailRegex.test(value) || "Invalid email format";
+                            }
                         }
                      })}
                     />  
@@ -92,7 +95,7 @@ function Login() {
                             label="Password:"
                             placeholder="Enter your password"
                             type= "password"
-                            {...register('password', { required:(value) => !!value || "Password is required"})}
+                            {...register('password', { required: "Password is required"})}
                             />
                         <Link to= "/forgot-password" className="text-sm pl-3 text-blue-600 font-semibold underline cursor-pointer">Forgot Password</Link>
                     </div>

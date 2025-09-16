@@ -25,7 +25,7 @@ function Verify() {
         let user;
         if (userId && secret) {
           // ✅ Direct verification completion (from link)
-          await authService.account.updateVerification(userId, secret);
+          await authService.account.confirmVerification(userId, secret);
           user = await authService.getCurrentUser();
 
           if (user?.emailVerification) {

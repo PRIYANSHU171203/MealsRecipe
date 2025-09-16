@@ -1,6 +1,6 @@
-import conf from "../conf/conf";
+import config from "../config/config";
 import { Client, Account, ID } from "appwrite";
-import { safeStorage } from "../utils/safeStorage";
+import { normalizeUser } from "../utils/user";
 
 
 export class AuthService {
@@ -9,8 +9,8 @@ export class AuthService {
 
     constructor(){
         this.client
-        .setEndpoint(conf.appwriteUrl)
-        .setProject(conf.appwriteProjectId)
+        .setEndpoint(config.appwriteUrl)
+        .setProject(config.appwriteProjectId)
         
         this.account = new Account(this.client);
     }
@@ -18,19 +18,59 @@ export class AuthService {
         async createAccount({email, password, name}){
             try {
                 const userAccount = await this.account.create(ID.unique(), email, password, name);
-                return userAccount;
+                return normalizeUser(userAccount);
 
                 } catch (error) {
                     console.log("Appwrite :: Create Account :: Error ", error);
                     throw error;
                 }
             }
+        async login({email, password}){
+            try {
+                  await this.account.createEmailPasswordSession(email, password);
+                  const user = await this.account.get();
+                  console.log(user);
+                  return normalizeUser(user);
+
+            } catch (error) {
+                console.log("Appwrite :: Login :: Error ", error);
+                throw error;
+                
+            }
+        }
+
+
+        async logout(){
+            try {
+                    await this.account.deleteSession("current");
+                    
+                } catch (error) {
+                    if (error.code === 401) {
+                    console.log("No active session, already logged out.");
+                    return; // just exit quietly
+                    }
+                    console.log("Appwrite :: Logout :: Error ", error);
+                    throw error;
+                }
+        }
+
+        async getCurrentUser(){
+            try {
+                 const user = await this.account.get();
+                 console.log(user);
+                 return normalizeUser(user);
+            } catch (e) {
+                  console.log(e);
+                  return null;       
+            }
+        }
 
         async sendVerificationEmail() {
-             try {                      
+             try {            
+                     const devOrigin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";          
                      const redirectUrl =
                         import.meta.env.MODE === "development"
-                            ? "http://localhost:3000/verify"
+                            ? `${devOrigin}/verify`
                             : "https://meals-recipe-devils-projects-a9995fee.vercel.app/verify";
 
                         return await this.account.createVerification(redirectUrl);
@@ -49,44 +89,6 @@ export class AuthService {
                     throw error;
                 }
             }
-
-        async login({email, password}){
-            try {
-               const session =  await this.account.createEmailPasswordSession(email, password);
-               safeStorage.setItem("sessionId", session.$id);
-               return session;
-
-            } catch (error) {
-                console.log("Appwrite :: Login :: Error ", error);
-                throw error;
-                
-            }
-        }
-        
-        async getCurrentUser(){
-            try {
-                return await this.account.get();
-            } catch (e) {
-                  console.log(e);
-                  
-               return null;
-                
-            }
-        }
-
-        async logout(){
-            try {
-                    await this.account.deleteSession("current");
-                    safeStorage.removeItem("sessionId");
-                } catch (error) {
-                    if (error.code === 401) {
-                    console.log("No active session, already logged out.");
-                    return; // just exit quietly
-                    }
-                    console.log("Appwrite :: Logout :: Error ", error);
-                    throw error;
-                }
-        }
 
         async sentRecoveryEmail(email){
             try {

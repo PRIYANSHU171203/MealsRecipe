@@ -1,13 +1,16 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Button, Loader, ConfirmDeleteToast } from "../components";
 import {useState, useEffect} from 'react'
-import service from '../appwrite/config'
+import service from '../appwrite/db'
 import {toast} from 'react-hot-toast'
+import {deleteMeal} from '../store/mealSlice'
+
 
 
 export default function MealDetails() {
   const { userData } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const { id } = useParams();
   const { meals } = useSelector((state) => state.meals);
   const existingMeal = meals.find((m) => m.$id === id);
@@ -51,7 +54,7 @@ export default function MealDetails() {
 
     
   const out = [];
-    for (let i = 1; i <= 20; i++) {
+    for (let i = 1; i <= 25; i++) {
       const ing = typeof meal[`strIngredient${i}`] === "string" ? meal[`strIngredient${i}`].trim() : "";
       const m = typeof meal[`strMeasure${i}`] === "string" ? meal[`strMeasure${i}`].trim() : "";
       if (ing) out.push(m ? `${m} - ${ing}` : ing);
@@ -87,13 +90,14 @@ export default function MealDetails() {
         onClick={() =>
           ConfirmDeleteToast({
             onConfirm: async () => {
-              const success = await service.deleteMeal(meal.$id);
-              if (success) {
-                toast.success("Meal deleted successfully!");
-                navigate("/meals");
-              } else {
-                toast.error("Failed to delete meal.");
-              }
+              try {
+                  await dispatch(deleteMeal(meal.$id)).unwrap();
+                  toast.success("Meal deleted successfully!");
+                  navigate("/meals");
+                } catch (err) {
+                  console.error("Delete failed:", err);
+                  toast.error("Failed to delete meal. " + (err.message || ""));
+                }
             },
           })
         }>
